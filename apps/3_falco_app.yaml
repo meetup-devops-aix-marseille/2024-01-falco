@@ -48,7 +48,7 @@ spec:
             enabled: true
           config:
             webhook:
-              address: https://webhook.site/2f8911f3-707d-43b2-9220-8a6c5d46c685
+              address: https://webhook.site/09394a05-8277-4059-a9d4-44e4124908b4
   destination:
     namespace: falco
     server: 'https://kubernetes.default.svc'

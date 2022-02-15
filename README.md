@@ -8,18 +8,51 @@
 ./up.sh
 ```
 
+__NOTE__: as the time of writting there is an issue open for missing latest falco kernel modules for Ubuntu version used by Scaleway. So i switched back to digital ocean for the lab but i'm sure it's a matter of days.
+
 ### apply manifests
 
-#### Prometheus
+- Register a webhook endpoint at https://webhook.site/ and edit `3_falco_app.yaml` (the created endpoints are only valid a few hours)
 
 ```sh
-cd apps/1_prometheus
+cd apps
 ./setup.sh
-cd -
 ```
 
-#### Other apps
+### Grafana / Prometheus configuration
 
 ```sh
-kubectl apply -f apps
+kubectl port-forward -n monitoring svc/grafana 8081:80 >/dev/null 2>&1 &
+kubectl -n monitoring get secrets grafana -o json | jq -r '.data."admin-password"' | base64 -d
+open "http://localhost:8081/"
+```
+
+- Configure a new prometheus datasource to http://prometheus-k8s:9090/
+- Grfana dashboard for falco is here : https://grafana.com/grafana/dashboards/11914
+
+### Test it
+
+```sh
+kubectl port-forward -n falco svc/falco-falcosidekick-ui 8080:2802 >/dev/null 2>&1 &
+open "http://localhost:8080/ui/#/"
+kubectl run debug --image nginx
+kubectl exec -it debug -- bash
+mknod /dev/rien c 1 3
+```
+
+```sh
+apt update
+apt install cowsay
+echo 'Salut !' | /usr/games/cowsay
+```
+
+Alerts will go:
+- in the falco-sidekick-ui dashboard (http://localhost:8080/ui/#/)
+- grafana (http://localhost:8081/)
+- in http://webook.site (under you registred endpoint)
+
+### Clean everything
+
+```sh
+./down.sh
 ```
