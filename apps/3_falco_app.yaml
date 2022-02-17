@@ -6,9 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://falcosecurity.github.io/charts'
+    repoURL: "https://falcosecurity.github.io/charts"
     targetRevision: 1.16.3
-    chart: 'falco'
+    chart: "falco"
     helm:
       values: |
         # auditLog:
@@ -17,9 +17,9 @@ spec:
         #     enabled: true
         customRules:
           my-rules.yaml: |-
-            -  macro: greetings
-               condition: >
-                 proc.name = cowsay  
+            - macro: greetings
+              condition: >
+                proc.name = cowsay
             - rule: Try to say use cowsay in Container
               desc: Detect use of greetings command in container
               condition: >
@@ -51,10 +51,10 @@ spec:
               address: https://webhook.site/09394a05-8277-4059-a9d4-44e4124908b4
   destination:
     namespace: falco
-    server: 'https://kubernetes.default.svc'
+    server: "https://kubernetes.default.svc"
   syncPolicy:
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
     automated:
       prune: true
       selfHeal: false
