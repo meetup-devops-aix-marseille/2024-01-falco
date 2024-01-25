@@ -1,0 +1,61 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falco
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    namespace: falco
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: true
+      selfHeal: false
+  source:
+    repoURL: "https://falcosecurity.github.io/charts"
+    targetRevision: 3.8.7
+    chart: "falco"
+    helm:
+      values: |
+        containerd:
+          enabled: true
+          # socket: /run/k3s/containerd/containerd.sock
+        ebpf:
+          enabled: true
+        customRules:
+          my-rules.yaml: |-
+            - macro: greetings
+              condition: >
+                proc.name = cowsay
+            - rule: Try to use cowsay in a container
+              desc: Detect use of cowsay greetings command in container
+              condition: >
+                spawned_process and
+                container and
+                greetings
+              output: >
+                Cowsay command launched in container (user=%user.name user_loginuid=%user.loginuid command=%proc.cmdline parent_process=%proc.pname
+                container_id=%container.id container_name=%container.name image=%container.image.repository:%container.image.tag)
+              priority: WARNING
+              tags: [dummy, process, demo]
+        fakeEventGenerator:
+          # set this to true if you want to see random message (a lot !)
+          enabled: false
+        falco:
+          metrics:
+            enabled: false
+          priority: notice
+          json_output: true
+          http_output:
+            enabled: true
+            url: http://falco-talon.falco.svc.cluster.local:2803/
+            insecure: true
+        falcosidekick:
+          enabled: false

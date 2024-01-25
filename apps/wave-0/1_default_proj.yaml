@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: default
+  namespace: argocd
+spec:
+  clusterResourceWhitelist:
+  - group: '*'
+    kind: '*'
+  destinations:
+  - namespace: '*'
+    server: '*'
+  orphanedResources:
+    ignore:
+    - kind: Secret
+      name: 'sh.helm.release.v1.argocd.*'
+    - kind: Secret
+      name: ingress-nginx-admission
+    - kind: Secret
+      name: cert-manager-webhook-ca
+    - kind: Secret
+      name: letsencrypt
+    - kind: Secret
+      name: prometheus-admission
+    - kind: Secret
+      name: '*-cert'
+    - kind: Secret
+      name: '*-tls'
+    - kind: ConfigMap
+      name: istio-ca-root-cert
+    - kind: Secret
+      name: '*-tls'
+    - kind: CiliumIdentity
+      name: '*'
+    warn: true
+  sourceRepos:
+  - '*'

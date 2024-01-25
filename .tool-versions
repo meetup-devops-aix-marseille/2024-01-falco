@@ -1,3 +1,3 @@
-scaleway-cli 2.4.0
-kubectl 1.22.3
-helm 3.6.3
+scaleway-cli 2.26.0
+kubectl 1.28.5
+helm 3.12.1

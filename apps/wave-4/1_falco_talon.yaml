@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falco-talon
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: falco
+    server: "https://kubernetes.default.svc"
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    automated:
+      prune: false
+      selfHeal: false
+  source:
+    repoURL: 'https://github.com/Issif/falco-talon.git'
+    targetRevision: HEAD
+    path: deployment/helm
+    helm:
+      values: |
+        replicaCount: 1
+        defaultNotifiers:
+          - webhook
+        notifiers:
+          webhook:
+            url: https://webhook.site/c65bf0d4-80a1-45fc-a89d-01a5991851ec

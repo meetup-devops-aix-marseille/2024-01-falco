@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: falcosidekick
+  namespace: monitoring
+  labels:
+    argocd.argoproj.io/sync-wave: "3"
+    release: prometheus
+spec:
+  jobLabel: falcosidekick
+  namespaceSelector:
+    # any: true
+    matchNames:
+    - falco
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: falco
+      app.kubernetes.io/name: falcosidekick
+      app.kubernetes.io/component: core
+  endpoints:
+  - port: http
+    interval: 15s
