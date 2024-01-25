@@ -16,5 +16,6 @@ eval "$(direnv export bash)"
 
 #### start the magic ####
 
-
-pe "kubectl delete --wait -f ./apps/wave-2"
+pei "kubectl delete --wait -n argocd application falco || true"
+pei "kubectl delete --wait -n argocd application falco-talon || true"
+pei "kubectl delete --wait ns falco || true"
