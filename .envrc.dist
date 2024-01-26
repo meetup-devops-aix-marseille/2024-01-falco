@@ -1,1 +1,6 @@
 export KUBECONFIG="$(pwd)/.kube/config"
+export DIRENV_LOG_FORMAT=""
+export TYPE_SPEED=50      # Accelerate typing
+export DEMO_CMD_COLOR=""  # No bold
+export DEMO_PROMPT="${PURPLE}$ ${COLOR_RESET}"
+export DEMO_COMMENT_COLOR=$CYAN
